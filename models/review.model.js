@@ -6,13 +6,15 @@ const reviewSchema = new Schema(
       type: String,
       required: true,
     },
-    productId: {
+    product: {
       type: SchemaTypes.ObjectId,
       required: true,
+      ref: 'product'
     },
-    userId: {
+    user: {
       type: SchemaTypes.ObjectId,
       required: true,
+      ref: 'user'
     },
     rate: {
       type: Number,

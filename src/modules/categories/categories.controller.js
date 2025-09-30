@@ -1,30 +1,32 @@
 import { categoryModel } from "../../../models/category.model.js";
 import slugify from "slugify";
+import { catchError } from "../../../utils/catchError.js";
+import { AppError } from "../../../utils/AppError.js";
 
-const getAllCategories = async (req, res) => {
-  let results = await categoryModel.find({});
-  if (results) return res.status(200).json({ message: "success", results });
+const getAllCategories = catchError(async (req, res, next) => {
+  const category = await categoryModel.find({});
+  if (category) return res.status(200).json({ message: "success", category });
   else res.status(404).json({ error: "not found " });
-};
+});
 
-const getCategoryById = async (req, res) => {
+const getCategoryById = catchError(async (req, res, next) => {
   let { id } = req.params;
-  let results = await categoryModel.findById(id);
-  if (results) return res.status(200).json({ message: "success", results });
+  const category = await categoryModel.findById(id);
+  if (category) return res.status(200).json({ message: "success", category });
   else res.status(404).json({ error: "not found " });
-};
+});
 
-const createCategory = async (req, res) => {
-  let { name } = req.body;
-  let results = new categoryModel({ name, slug: slugify(name) });
-  await results.save();
-  res.status(201).json({ message: "category added successfully" });
-};
+const addCategory = catchError(async (req, res, next) => {
+  req.body.slug = slugify(req.body.name);
+  const category = new categoryModel(req.body);
+  await category.save();
+  res.status(201).json({ message: "category added successfully", category });
+});
 
-const updateCategory = async (req, res) => {
+const updateCategory = catchError(async (req, res, next) => {
   let { id } = req.params;
   let { name } = req.body;
-  let results = await categoryModel.findByIdAndUpdate(
+  const category = await categoryModel.findByIdAndUpdate(
     id,
     {
       name,
@@ -33,27 +35,31 @@ const updateCategory = async (req, res) => {
     { new: true }
   );
 
-  !results && res.status(404).json({ error: "category not found " });
-  results && res.status(200).json({ message: "updated successfully", results });
-};
+  //!category && res.status(404).json({ error: "category not found " });
+  !category && next(new AppError("category not found ", 404));
 
-const deleteCategory = async (req, res) => {
+  category &&
+    res.status(200).json({ message: "updated successfully", category });
+});
+
+const deleteCategory = catchError(async (req, res, next) => {
   let { id } = req.params;
-  let results = await categoryModel.findByIdAndDelete(id);
-  !results && res.status(404).json({ error: "category not found " });
-  results && res.status(200).json({ message: "deleted successfully", results });
-};
+  const category = await categoryModel.findByIdAndDelete(id);
+  !category && next(new AppError("category not found", 404));
+  category &&
+    res.status(200).json({ message: "deleted successfully", category });
+});
 
 export {
   getAllCategories,
   getCategoryById,
-  createCategory,
+  addCategory,
   updateCategory,
   deleteCategory,
 };
 
 // save() when working with document instances,
-// create() for single documents with middleware,
+// add() for single documents with middleware,
 //  insertMany() for bulk operations where performance matters more than middleware.
 
 //  Operational Errors : The application is working correctly, but something in the environment failed
