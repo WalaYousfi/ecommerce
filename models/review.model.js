@@ -7,18 +7,18 @@ const reviewSchema = new Schema(
       required: true,
     },
     product: {
-      type: SchemaTypes.ObjectId,
+      type: Schema.Types.ObjectId,
       required: true,
-      ref: 'product'
+      ref: "product",
     },
     user: {
-      type: SchemaTypes.ObjectId,
+      type: Schema.Types.ObjectId,
       required: true,
-      ref: 'user'
+      ref: "user",
     },
     rate: {
       type: Number,
-      enum: { values: [1, 2, 3, 4, 5], message: "{VALUE} is not supported" },
+      enum: { values: [1, 2, 3, 4, 5] },
       required: true,
     },
   },

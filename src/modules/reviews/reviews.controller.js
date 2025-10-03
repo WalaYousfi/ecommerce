@@ -1,4 +1,3 @@
-import slugify from "slugify";
 import { reviewModel } from "../../../models/review.model.js";
 
 const getAllReviews = async (req, res) => {

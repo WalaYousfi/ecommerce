@@ -2,11 +2,11 @@ import express from "express";
 import dotenv from "dotenv";
 import { dbconnection } from "./db/db-connections.js";
 import userRouter from "./src/modules/user/user.routes.js";
-import categoryRouter from "./src/modules/categories/categories.routes.js";
-import subCategoryRouter from "./src/modules/subCategories/subCategories.routes.js";
-import brandRouter from "./src/modules/brand/brand.routes.js";
-import couponRouter from "./src/modules/coupon/coupon.routes.js";
-import productRouter from "./src/modules/product/product.routes.js";
+import categoriesRouter from "./src/modules/categories/categories.routes.js";
+import subCategoriesRouter from "./src/modules/subCategories/subCategories.routes.js";
+import brandsRouter from "./src/modules/brands/brands.routes.js";
+import couponsRouter from "./src/modules/coupons/coupons.routes.js";
+import productsRouter from "./src/modules/products/products.routes.js";
 import reviewsRouter from "./src/modules/reviews/reviews.routes.js";
 import morgan from "morgan";
 
@@ -20,11 +20,11 @@ app.use(express.json()); // Checks the incoming request to see if it has a Conte
 dbconnection();
 
 app.use("/", userRouter);
-app.use("/api/v1/categories", categoryRouter);
-app.use("/api/v1/subCategory", subCategoryRouter);
-app.use("/api/v1/brand", brandRouter);
-app.use("/api/v1/coupon", couponRouter);
-app.use("/api/v1/product", productRouter);
+app.use("/api/v1/categories", categoriesRouter);
+app.use("/api/v1/subCategories", subCategoriesRouter);
+app.use("/api/v1/brands", brandsRouter);
+app.use("/api/v1/coupons", couponsRouter);
+app.use("/api/v1/products", productsRouter);
 app.use("api/v1/reviews", reviewsRouter);
 
 app.use((req, res) => {

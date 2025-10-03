@@ -1,6 +1,5 @@
 import express from "express";
 import * as categoryController from "./categories.controller.js";
-import { asyncHandler } from "../../../utils/helpers.js";
 
 const categoryRouter = express.Router();
 

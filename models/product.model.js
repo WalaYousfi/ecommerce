@@ -32,6 +32,11 @@ const productSchema = new Schema(
       ],
       min: [10, "too short product description"],
     },
+    stock: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
     sold: {
       type: Number,
       default: 0,
@@ -43,17 +48,17 @@ const productSchema = new Schema(
       type: [String],
     },
     category: {
-      type: Schema.ObjectId,
+      type: Schema.Types.ObjectId,
       required: true,
       ref: "category",
     },
     subCategory: {
-      type: Schema.ObjectId,
+      type: Schema.Types.ObjectId,
       required: true,
       ref: "subCategory",
     },
     brand: {
-      type: Schema.ObjectId,
+      type: Schema.Types.ObjectId,
       required: true,
       ref: "brand",
     },

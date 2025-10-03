@@ -30,8 +30,12 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    isBlocked: {
+      type: Boolean,
+      default: false,
+    },
   },
-  { timeStamps: true }
+  { timestamps: true }
 );
 
 export const userModel = model("user", userSchema);
