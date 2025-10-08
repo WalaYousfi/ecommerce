@@ -2,6 +2,7 @@ import { categoryModel } from "../../../models/category.model.js";
 import slugify from "slugify";
 import { catchError } from "../../../utils/catchError.js";
 import { AppError } from "../../../utils/AppError.js";
+import { deleteOne } from "../handlers/factor.js";
 
 const getAllCategories = catchError(async (req, res, next) => {
   const category = await categoryModel.find({});
@@ -26,6 +27,7 @@ const addCategory = catchError(async (req, res, next) => {
 const updateCategory = catchError(async (req, res, next) => {
   let { id } = req.params;
   let { name } = req.body;
+  req.body.slug = slugify(req.body.name);
   const category = await categoryModel.findByIdAndUpdate(
     id,
     {
@@ -42,13 +44,7 @@ const updateCategory = catchError(async (req, res, next) => {
     res.status(200).json({ message: "updated successfully", category });
 });
 
-const deleteCategory = catchError(async (req, res, next) => {
-  let { id } = req.params;
-  const category = await categoryModel.findByIdAndDelete(id);
-  !category && next(new AppError("category not found", 404));
-  category &&
-    res.status(200).json({ message: "deleted successfully", category });
-});
+const deleteCategory = deleteOne(categoryModel);
 
 export {
   getAllCategories,

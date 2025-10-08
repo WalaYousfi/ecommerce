@@ -5,13 +5,13 @@ const subCategoryRouter = express.Router();
 
 subCategoryRouter
   .route("/")
-  .get(subCategoryController.getAllSubCategories)
-  .post(subCategoryController.addSubCategory);
+  .get(subCategoryController.getAllsubCategories)
+  .post(subCategoryController.addsubCategory);
 
 subCategoryRouter
   .route("/:id")
-  .get(subCategoryController.getSubCategoryById)
-  .put(subCategoryController.updateSubCategory)
-  .delete(subCategoryController.deleteSubCategory);
+  .get(subCategoryController.getsubCategoryById)
+  .put(subCategoryController.updatesubCategory)
+  .delete(subCategoryController.deletesubCategory);
 
 export default subCategoryRouter;

@@ -1,5 +1,6 @@
 import slugify from "slugify";
 import { productModel } from "../../../models/product.model.js";
+import { deleteOne } from "../handlers/factor.js";
 
 const getAllProducts = async (req, res) => {
   let results = await productModel.find({});
@@ -93,13 +94,7 @@ const updateProduct = async (req, res) => {
   results && res.status(200).json({ message: "updated successfully", results });
 };
 
-const deleteProduct = async (req, res) => {
-  let { id } = req.params;
-  let results = await productModel.findByIdAndDelete(id);
-  !results && res.status(404).json({ error: "Product not found " });
-  results &&
-    res.status(200).json({ message: "Product deleted successfully", results });
-};
+const deleteProduct = deleteOne(productModel, "product");
 
 export {
   getAllProducts,

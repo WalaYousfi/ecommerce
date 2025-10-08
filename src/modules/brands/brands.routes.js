@@ -1,17 +1,17 @@
 import express from "express";
-import * as brandController from "./brands.controller.js";
+import * as brands from "./brands.controller.js";
 
 const brandRouter = express.Router();
 
 brandRouter
   .route("/")
-  .get(brandController.getAllBrands)
-  .post(brandController.createBrand);
+  .get(brands.getAllBrands)
+  .post(brands.addBrand);
 
 brandRouter
   .route("/:id")
-  .get(brandController.getBrandById)
-  .put(brandController.updateBrand)
-  .delete(brandController.deleteBrand);
+  .get(brands.getBrandById)
+  .put(brands.updateBrand)
+  .delete(brands.deleteBrand);
 
 export default brandRouter;

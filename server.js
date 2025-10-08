@@ -8,6 +8,7 @@ import brandsRouter from "./src/modules/brands/brands.routes.js";
 import couponsRouter from "./src/modules/coupons/coupons.routes.js";
 import productsRouter from "./src/modules/products/products.routes.js";
 import reviewsRouter from "./src/modules/reviews/reviews.routes.js";
+import { bootstrap } from "./src/bootstrap.js";
 import morgan from "morgan";
 
 const app = express();
@@ -17,15 +18,9 @@ const port = process.env.PORT || 3000;
 app.use(morgan("dev")); //Morgan is a popular HTTP request logger middleware for Node.js //"dev" format, which outputs concise, colored logs for each request to the console
 app.use(express.json()); // Checks the incoming request to see if it has a Content-Type: application/json header. // Reads the raw data from the request body. // Parses the JSON string into a regular JavaScript object.
 
-dbconnection();
+bootstrap(app);
 
-app.use("/", userRouter);
-app.use("/api/v1/categories", categoriesRouter);
-app.use("/api/v1/subCategories", subCategoriesRouter);
-app.use("/api/v1/brands", brandsRouter);
-app.use("/api/v1/coupons", couponsRouter);
-app.use("/api/v1/products", productsRouter);
-app.use("api/v1/reviews", reviewsRouter);
+dbconnection();
 
 app.use((req, res) => {
   res.status(404).json({ error: "not found" });

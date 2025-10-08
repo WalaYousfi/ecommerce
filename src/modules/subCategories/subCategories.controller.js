@@ -1,51 +1,65 @@
 import slugify from "slugify";
+import { catchError } from "../../../utils/catchError.js";
+import { AppError } from "../../../utils/AppError.js";
 import { subCategoryModel } from "../../../models/subCategory.model.js";
+import { deleteOne } from "../handlers/factor.js";
 
-const getAllSubCategories = async (req, res) => {
-  const results = await subCategoryModel.find();
-  results && res.status(200).json({ message: "success", results });
-  !results && res.status(404).json({ error: "not found " });
-};
+const getAllsubCategories = catchError(async (req, res, next) => {
+  let subCategory = await subCategoryModel.find({});
+  res.status(200).json({ message: "success", subCategory });
+});
 
-const getSubCategoryById = async (req, res) => {
+const getsubCategoryById = catchError(async (req, res, next) => {
   let { id } = req.params;
-  const results = await subCategoryModel.findById(id);
-  results && res.status(200).json({ message: "success", results });
-  !results && res.status(404).json({ error: "not found " });
-};
+  const subCategory = await subCategoryModel.findById(id);
+  res.status(200).json({ message: "success", subCategory });
+});
 
-const addSubCategory = async (req, res) => {
-  let { name, category } = req.body;
-  await subCategoryModel.insertMany({ name, slug: slugify(name), category });
-  return res.status(201).json({ message: "subCategory added successfully" });
-};
+const addsubCategory = catchError(async (req, res, next) => {
+  req.body.slug = slugify(req.body.name);
+  const subCategory = new subCategoryModel(req.body);
+  await subCategory.save();
+  res
+    .status(201)
+    .json({ message: "subCategory added successfully", subCategory });
+});
 
-const updateSubCategory = async (req, res) => {
+const updatesubCategory = catchError(async (req, res, next) => {
   let { id } = req.params;
-  let { name, category } = req.body;
-  const results = await subCategoryModel.findByIdAndUpdate(id, {
-    name,
-    slug: slugify(name),
-    category,
+  if (req.body.name) req.body.slug = slugify(req.body.name);
+  const subCategory = await subCategoryModel.findByIdAndUpdate(id, req.body, {
+    new: true,
   });
-  results && res.status(200).json({ message: "successful update", results });
-  !results && res.status(404).json({ error: "not found " });
-};
 
-const deleteSubCategory = async (req, res) => {
-  let { id } = req.params;
-  let results = await subCategoryModel.findByIdAndDelete(id);
-  !results && res.status(404).json({ error: "subCategory not found " });
-  results &&
-    res
-      .status(200)
-      .json({ message: "subCategory deleted successfully", results });
-};
+  //!subCategory && res.status(404).json({ error: "subCategory not found " });
+  !subCategory && next(new AppError("subCategory not found ", 404));
+
+  subCategory &&
+    res.status(200).json({ message: "updated successfully", subCategory });
+});
+
+const deletesubCategory = deleteOne(subCategoryModel);
 
 export {
-  getAllSubCategories,
-  getSubCategoryById,
-  addSubCategory,
-  updateSubCategory,
-  deleteSubCategory,
+  getAllsubCategories,
+  getsubCategoryById,
+  addsubCategory,
+  updatesubCategory,
+  deletesubCategory,
 };
+
+// save() when working with document instances,
+// add() for single documents with middleware,
+//  insertMany() for bulk operations where performance matters more than middleware.
+
+//  Operational Errors : The application is working correctly, but something in the environment failed
+//  Programming Errors : Errors due to mistakes in the code itself
+
+// slugify: Slugify is a JavaScript library that converts strings into URL-friendly slugs.
+//  It takes any string and transforms it into a clean, readable format suitable for URLs.
+
+// 100-199 :
+// 200-299 :
+// 300- 399:
+// 400-499:
+//500-599:
