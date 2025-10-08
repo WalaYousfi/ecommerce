@@ -4,6 +4,7 @@ import categoryRouter from "./modules/categories/categories.routes.js";
 import subCategoryRouter from "./modules/subCategories/subCategories.routes.js";
 import brandRouter from "./modules/brands/brands.routes.js";
 import productRouter from "./modules/products/products.routes.js";
+import couponRouter from "./modules/coupons/coupons.routes.js";
 //error handling middleware
 
 export function bootstrap(app) {
@@ -11,6 +12,7 @@ export function bootstrap(app) {
   app.use("/api/v1/subcategories", subCategoryRouter);
   app.use("/api/v1/brands", brandRouter);
   app.use("/api/v1/products", productRouter);
+  app.use("/api/v1/coupons", couponRouter);
 
   app.get("/", (req, res) => {
     res.send("hello world");

@@ -5,7 +5,15 @@ import { subCategoryModel } from "../../../models/subCategory.model.js";
 import { deleteOne } from "../handlers/factor.js";
 
 const getAllsubCategories = catchError(async (req, res, next) => {
-  let subCategory = await subCategoryModel.find({});
+  console.log(req.params);
+  let filter = {};
+  if (req.params.categoryId) {
+    filter = {
+      category: req.params.categoryId,
+    };
+  }
+  let subCategory = await subCategoryModel.find(filter);
+
   res.status(200).json({ message: "success", subCategory });
 });
 

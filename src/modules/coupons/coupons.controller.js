@@ -1,60 +1,47 @@
-import slugify from "slugify";
 import { couponModel } from "../../../models/coupon.model.js";
+import { catchError } from "../../../utils/catchError.js";
+import { AppError } from "../../../utils/AppError.js";
+import { deleteOne } from "../handlers/factor.js";
 
-const getAllCoupons = async (req, res) => {
-  let results = await couponModel.find({});
-  results &&
-    res
-      .status(200)
-      .json({ message: "these are the existing Coupons:", results });
-  !results &&
-    res.status(404).json({ message: "there are no Coupons ", results });
-};
+const getAllCoupons = catchError(async (req, res, next) => {
+  const coupons = await couponModel.find({});
+  if (coupons) return res.status(200).json({ message: "success", coupons });
+  else res.status(404).json({ error: "not found " });
+});
 
-const getCouponById = async (req, res) => {
+const getCouponById = catchError(async (req, res, next) => {
   let { id } = req.params;
-  let results = await couponModel.findById({ id });
-  results &&
-    res.status(200).json({ message: "this is the demanded Coupon:", results });
-  !results &&
-    res.status(404).json({ message: "demanded Coupon not found", results });
-};
+  const coupons = await couponModel.findById(id);
+  if (coupons) return res.status(200).json({ message: "success", coupons });
+  else res.status(404).json({ error: "not found " });
+});
 
-const createCoupon = async (req, res) => {
-  let { code, discount } = req.body;
-  let results = await couponModel.create({ code, discount });
-  results && res.status(201).json({ message: "Coupon added:", results });
-};
+const addCoupon = catchError(async (req, res, next) => {
+  const coupons = new couponModel(req.body);
+  await coupons.save();
+  res.status(201).json({ message: "coupons added successfully", coupons });
+});
 
-const updateCoupon = async (req, res) => {
+const updateCoupon = catchError(async (req, res, next) => {
   let { id } = req.params;
-  let { code, expired, discount } = req.body;
-  let results = await couponModel.findByIdAndUpdate(
-    id,
-    {
-      code,
-      expired,
-      discount,
-    },
-    { new: true }
-  );
+  const coupons = await couponModel.findByIdAndUpdate(id, req.body, {
+    new: true,
+  });
 
-  !results && res.status(404).json({ error: "Coupon not found " });
-  results && res.status(200).json({ message: "updated successfully", results });
-};
+  //!coupons && res.status(404).json({ error: "coupons not found " });
+  !coupons && next(new AppError("coupons not found ", 404));
 
-const deleteCoupon = async (req, res) => {
-  let { id } = req.params;
-  let results = await couponModel.findByIdAndDelete(id);
-  !results && res.status(404).json({ error: "Coupon not found " });
-  results &&
-    res.status(200).json({ message: "Coupon deleted successfully", results });
-};
+  coupons &&
+    res.status(200).json({ message: "updated successfully", coupons });
+});
+
+const deleteCoupon = deleteOne(couponModel);
 
 export {
   getAllCoupons,
   getCouponById,
-  createCoupon,
+  addCoupon,
   updateCoupon,
   deleteCoupon,
 };
+

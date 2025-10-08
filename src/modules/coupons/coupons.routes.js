@@ -6,7 +6,7 @@ const couponRouter = express.Router();
 couponRouter
   .route("/")
   .get(couponController.getAllCoupons)
-  .post(couponController.createCoupon);
+  .post(couponController.addCoupon);
 
 couponRouter
   .route("/:id")
